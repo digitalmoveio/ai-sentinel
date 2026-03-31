@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Sentinel - AI Content Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-brand">
+                <span class="brand-icon">&#x1F6E1;</span>
+                <span>AI Sentinel</span>
+            </a>
+            <div class="nav-links">
+                <a href="/" class="active">Detect</a>
+                <a href="/about">About</a>
+                <a href="https://github.com/digitalmoveio/ai-sentinel" target="_blank">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Is it real or AI-generated?</h1>
+            <p>Upload an image or video and our multi-method analysis engine will determine the probability that it was created by AI.</p>
+        </section>
+
+        <!-- Upload Area -->
+        <section class="upload-section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17 8 12 3 7 8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <h3>Drop your file here</h3>
+                <p>or click to browse</p>
+                <p class="upload-hint">Supports: JPG, PNG, WebP, MP4, MOV, AVI, MKV (max 100MB)</p>
+                <input type="file" id="fileInput" accept="image/*,video/*" hidden>
+            </div>
+
+            <!-- File Preview -->
+            <div class="file-preview" id="filePreview" style="display: none;">
+                <div class="preview-content">
+                    <img id="imagePreview" style="display: none;">
+                    <video id="videoPreview" controls style="display: none;"></video>
+                </div>
+                <div class="preview-info">
+                    <span id="fileName"></span>
+                    <span id="fileSize"></span>
+                    <button class="btn btn-secondary" id="removeFile">Remove</button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="analyzeBtn" disabled>
+                <span class="btn-text">Analyze Content</span>
+                <span class="btn-loading" style="display: none;">
+                    <span class="spinner"></span>
+                    Analyzing...
+                </span>
+            </button>
+        </section>
+
+        <!-- Results Area -->
+        <section class="results-section" id="resultsSection" style="display: none;">
+            <h2>Analysis Results</h2>
+
+            <!-- Main Score -->
+            <div class="score-card">
+                <div class="score-gauge" id="scoreGauge">
+                    <svg viewBox="0 0 200 200" class="gauge-svg">
+                        <circle cx="100" cy="100" r="85" class="gauge-bg"/>
+                        <circle cx="100" cy="100" r="85" class="gauge-fill" id="gaugeFill"/>
+                    </svg>
+                    <div class="gauge-text">
+                        <span class="gauge-value" id="gaugeValue">0%</span>
+                        <span class="gauge-label" id="gaugeLabel">Analyzing...</span>
+                    </div>
+                </div>
+
+                <div class="score-details">
+                    <div class="score-bar">
+                        <div class="bar-label">
+                            <span>AI Generated</span>
+                            <span id="aiPercent">0%</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill bar-ai" id="aiBar"></div>
+                        </div>
+                    </div>
+                    <div class="score-bar">
+                        <div class="bar-label">
+                            <span>Authentic / Real</span>
+                            <span id="realPercent">0%</span>
+                        </div>
+                        <div class="bar-track">
+                            <div class="bar-fill bar-real" id="realBar"></div>
+                        </div>
+                    </div>
+                    <div class="confidence-badge" id="confidenceBadge">
+                        Confidence: <strong id="confidenceValue">0%</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Analysis -->
+            <div class="analysis-grid" id="analysisGrid">
+                <!-- Populated by JavaScript -->
+            </div>
+
+            <!-- Warnings -->
+            <div class="warnings" id="warningsArea" style="display: none;">
+                <h3>Warnings</h3>
+                <ul id="warningsList"></ul>
+            </div>
+
+            <button class="btn btn-secondary" id="newAnalysis">Analyze Another File</button>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>AI Sentinel is open-source software by <a href="https://github.com/digitalmoveio" target="_blank">DigitalMove</a>.</p>
+            <p class="disclaimer">Results are probabilistic estimates, not definitive judgments. Use as one signal among many.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

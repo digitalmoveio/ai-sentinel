@@ -46,29 +46,45 @@ python -m app.main
 
 Open [http://localhost:5000](http://localhost:5000) in your browser.
 
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `5000` | Server port |
+| `FLASK_DEBUG` | `false` | Enable debug mode |
+| `SECRET_KEY` | (auto) | Flask secret key for sessions |
+
 ## How It Works
 
 AI Sentinel combines five independent analysis methods for images. Each method examines a different aspect of the media and produces an independent score. These scores are combined using weighted averaging to produce a final AI probability.
 
 ### Detection Methods
 
-**Error Level Analysis (ELA)** — Re-compresses the image at a known quality and measures the difference.
+**Error Level Analysis (ELA)**
+Re-compresses the image at a known quality and measures the difference. AI-generated images tend to have more uniform error levels.
 
-**Frequency Domain Analysis (FFT)** — Transforms the image into the frequency domain to detect AI artifacts.
+**Frequency Domain Analysis (FFT)**
+Transforms the image into the frequency domain. AI content often shows faster high-frequency rolloff and periodic artifacts from GAN architectures.
 
-**Statistical Analysis** — Examines pixel distributions, noise levels, and color uniqueness.
+**Statistical Analysis**
+Examines pixel distributions, noise levels, histogram patterns, and color uniqueness. AI-generated content often has different noise characteristics.
 
-**Metadata Analysis** — Inspects EXIF data for camera information and software signatures.
+**Metadata Analysis**
+Inspects EXIF data for camera information, software signatures, and file characteristics. AI-generated images typically lack camera metadata.
 
-**Texture Analysis (LBP)** — Uses Local Binary Patterns to assess texture entropy and consistency.
+**Texture Analysis (LBP)**
+Uses Local Binary Patterns to assess texture entropy and regional consistency. AI-generated images often have unnaturally uniform textures.
 
 ### Video Analysis
 
-For videos, AI Sentinel samples key frames and runs image analysis on each, plus temporal consistency and motion analysis.
+For videos, AI Sentinel samples key frames and runs image analysis on each, plus:
+
+- **Temporal consistency** — Measures frame-to-frame differences to detect flickering or unnatural consistency
+- **Motion analysis** — Uses optical flow to detect unnatural motion patterns
 
 ## API
 
-### POST /api/analyze
+### `POST /api/analyze`
 
 Upload a file for analysis.
 
@@ -76,13 +92,65 @@ Upload a file for analysis.
 curl -X POST -F "file=@photo.jpg" http://localhost:5000/api/analyze
 ```
 
-### GET /api/formats
+**Response:**
+
+```json
+{
+  "file": "photo.jpg",
+  "type": "image",
+  "result": {
+    "is_ai_generated": false,
+    "ai_probability": 32.5,
+    "real_probability": 67.5,
+    "confidence": 100.0,
+    "analysis_details": { ... }
+  }
+}
+```
+
+### `GET /api/formats`
 
 Returns supported file formats.
 
-### GET /api/health
+### `GET /api/health`
 
 Health check endpoint.
+
+## Project Structure
+
+```
+ai-sentinel/
+├── app/
+│   ├── __init__.py
+│   ├── main.py                 # Flask application
+│   ├── detectors/
+│   │   ├── __init__.py
+│   │   ├── analyzer.py         # Unified content analyzer
+│   │   ├── image_detector.py   # Image AI detection engine
+│   │   └── video_detector.py   # Video AI detection engine
+│   ├── static/
+│   │   ├── css/style.css
+│   │   ├── js/app.js
+│   │   └── uploads/
+│   └── templates/
+│       ├── index.html
+│       └── about.html
+├── tests/
+│   └── test_detectors.py
+├── docs/
+├── requirements.txt
+├── setup.py
+├── LICENSE
+├── CONTRIBUTING.md
+└── README.md
+```
+
+## Limitations
+
+- Results are **probabilistic estimates**, not definitive judgments
+- Detection accuracy varies by AI model and post-processing
+- Heavily edited real photos may score as AI-generated
+- The tool works best as one signal among many in content verification
 
 ## Contributing
 

@@ -1,0 +1,21 @@
+# AI Sentinel - Requirements
+# Core
+flask>=3.0.0
+werkzeug>=3.0.0
+gunicorn>=21.2.0
+
+# Image Processing
+Pillow>=10.0.0
+numpy>=1.24.0
+scipy>=1.11.0
+scikit-image>=0.21.0
+
+# Video Processing
+opencv-python-headless>=4.8.0
+
+# ML / Detection
+onnxruntime>=1.16.0
+
+# Utilities
+python-magic>=0.4.27
+filetype>=1.2.0
